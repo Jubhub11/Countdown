@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stream Countdown</title>
+<title>Bald™ Stream Countdown</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
 
@@ -20,6 +20,7 @@
     animation: gradientShift 20s ease infinite;
     color: white;
     text-align: center;
+    overflow: hidden;
   }
 
   @keyframes gradientShift {
@@ -29,9 +30,10 @@
   }
 
   h1 {
-    font-size: 2.5em;
+    font-size: 2em;
     margin-bottom: 20px;
     text-shadow: 0 0 15px rgba(255,255,255,0.3);
+    transition: opacity 0.5s ease;
   }
 
   #countdown {
@@ -57,26 +59,97 @@
     background-color: #772ce8;
     transform: scale(1.05);
   }
+
+  .ticker {
+    position: absolute;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    width: 100%;
+    padding: 10px 0;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .ticker p {
+    display: inline-block;
+    padding-left: 100%;
+    animation: tickerMove 20s linear infinite;
+  }
+
+  @keyframes tickerMove {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+  }
 </style>
 </head>
 <body>
-  <h1>Stream startet in</h1>
+  <h1 id="headline">Bald™</h1>
   <div id="countdown"></div>
-  <a href="https://www.twitch.tv/91chief" target="_blank" class="twitch-link">
+  <a href="https://twitch.tv/91chief" target="_blank" class="twitch-link">
     ▶ Zum Stream
   </a>
 
+  <div class="ticker">
+    <p id="news"></p>
+  </div>
+
+  <audio id="trollSound" src="troll.mp3" preload="auto"></audio>
+
   <script>
-    const targetDate = new Date("2025-09-28T20:00:00"); // Stream-Start-Datum & Uhrzeit
+    const headlines = [
+      "Bald™",
+      "Die Legende kehrt zurück!",
+      "Seit 2022 in Arbeit...",
+      "Er streamt gleich… wahrscheinlich",
+      "Streamer.exe wird gestartet...",
+      "Das wird episch…"
+    ];
+
+    const newsTexts = [
+      "Breaking: Experten schätzen 99% Wahrscheinlichkeit, dass der Stream doch ausfällt.",
+      "Insider: Mikrofon schon entstaubt.",
+      "Leak: Streamplan bis 2030 veröffentlicht.",
+      "Breaking: Kabelsalat eskaliert.",
+      "Gerücht: Streamstart verschiebt sich um unbestimmte Zeit.",
+      "Update: Streamer wurde zuletzt im Juni 2022 gesichtet."
+    ];
+
+    const headlineEl = document.getElementById("headline");
+    const newsEl = document.getElementById("news");
+    const soundEl = document.getElementById("trollSound");
+
+    // Initial Headlines + News setzen
+    function changeHeadline() {
+      headlineEl.style.opacity = 0;
+      setTimeout(() => {
+        headlineEl.textContent = headlines[Math.floor(Math.random() * headlines.length)];
+        headlineEl.style.opacity = 1;
+      }, 500);
+    }
+    function changeNews() {
+      newsEl.textContent = newsTexts[Math.floor(Math.random() * newsTexts.length)];
+    }
+
+    setInterval(changeHeadline, 5000);
+    setInterval(changeNews, 10000);
+    changeHeadline();
+    changeNews();
+
+    // Countdown mit Endlos-Reset
+    let targetDate = new Date();
+    targetDate.setMinutes(targetDate.getMinutes() + 2); // Start mit 2 Minuten
 
     function updateCountdown() {
       const now = new Date();
-      const diff = targetDate - now;
+      let diff = targetDate - now;
       const countdownEl = document.getElementById("countdown");
 
       if (diff <= 0) {
-        countdownEl.textContent = "Der Stream läuft jetzt!";
-        return;
+        // Neuer Startzeitpunkt + Sound abspielen
+        targetDate = new Date();
+        targetDate.setMinutes(targetDate.getMinutes() + 2);
+        playRandomSound();
+        diff = targetDate - now;
       }
 
       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -84,12 +157,25 @@
       const mins = Math.floor((diff / (1000 * 60)) % 60);
       const secs = Math.floor((diff / 1000) % 60);
 
-      countdownEl.textContent = 
-        `${days}d ${hours}h ${mins}m ${secs}s`;
+      countdownEl.textContent = `${days}d ${hours}h ${mins}m ${secs}s`;
     }
-
     setInterval(updateCountdown, 1000);
     updateCountdown();
+
+    // Random Sound
+    function playRandomSound() {
+      if (Math.random() < 0.5) { // 50% Chance
+        soundEl.currentTime = 0;
+        soundEl.play();
+      }
+    }
+
+    // Extra: zufälliger Sound auch während Countdown
+    setInterval(() => {
+      if (Math.random() < 0.15) { // 5% Chance alle 10 Sek
+        playRandomSound();
+      }
+    }, 10000);
   </script>
 </body>
 </html>
