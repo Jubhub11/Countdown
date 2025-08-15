@@ -2,34 +2,94 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Countdown</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stream Countdown</title>
 <style>
-  body { font-family: sans-serif; text-align: center; margin-top: 5em; }
-  #countdown { font-size: 2em; }
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+  body {
+    margin: 0;
+    font-family: 'Orbitron', sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(270deg, #4b006e, #001d6e, #00736e);
+    background-size: 600% 600%;
+    animation: gradientShift 20s ease infinite;
+    color: white;
+    text-align: center;
+  }
+
+  @keyframes gradientShift {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+  }
+
+  h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    text-shadow: 0 0 15px rgba(255,255,255,0.3);
+  }
+
+  #countdown {
+    font-size: 3em;
+    letter-spacing: 2px;
+    margin-bottom: 40px;
+    text-shadow: 0 0 20px rgba(255,255,255,0.5);
+  }
+
+  a.twitch-link {
+    display: inline-block;
+    padding: 15px 25px;
+    background-color: #9146FF;
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 1.2em;
+    transition: background 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 15px rgba(145,70,255,0.4);
+  }
+
+  a.twitch-link:hover {
+    background-color: #772ce8;
+    transform: scale(1.05);
+  }
 </style>
 </head>
 <body>
-<h1>Countdown</h1>
-<div id="countdown"></div>
+  <h1>Stream startet in</h1>
+  <div id="countdown"></div>
+  <a href="https://www.twitch.tv/91chief" target="_blank" class="twitch-link">
+    ▶ Zum Stream
+  </a>
 
-<script>
-  const targetDate = new Date("2025-12-31T00:00:00"); // Ziel-Datum
-  function updateCountdown() {
-    const now = new Date();
-    const diff = targetDate - now;
-    if (diff <= 0) {
-      document.getElementById("countdown").textContent = "Frohes Neues Jahr!";
-      return;
+  <script>
+    const targetDate = new Date("2025-09-28T20:00:00"); // Stream-Start-Datum & Uhrzeit
+
+    function updateCountdown() {
+      const now = new Date();
+      const diff = targetDate - now;
+      const countdownEl = document.getElementById("countdown");
+
+      if (diff <= 0) {
+        countdownEl.textContent = "Der Stream läuft jetzt!";
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const mins = Math.floor((diff / (1000 * 60)) % 60);
+      const secs = Math.floor((diff / 1000) % 60);
+
+      countdownEl.textContent = 
+        `${days}d ${hours}h ${mins}m ${secs}s`;
     }
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-    const mins = Math.floor((diff / (1000 * 60)) % 60);
-    const secs = Math.floor((diff / 1000) % 60);
-    document.getElementById("countdown").textContent =
-      `${days}d ${hours}h ${mins}m ${secs}s`;
-  }
-  setInterval(updateCountdown, 1000);
-  updateCountdown();
-</script>
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+  </script>
 </body>
 </html>
