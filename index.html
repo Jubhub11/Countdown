@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Countdown</title>
+<style>
+  body { font-family: sans-serif; text-align: center; margin-top: 5em; }
+  #countdown { font-size: 2em; }
+</style>
+</head>
+<body>
+<h1>Countdown</h1>
+<div id="countdown"></div>
+
+<script>
+  const targetDate = new Date("2025-12-31T00:00:00"); // Ziel-Datum
+  function updateCountdown() {
+    const now = new Date();
+    const diff = targetDate - now;
+    if (diff <= 0) {
+      document.getElementById("countdown").textContent = "Frohes Neues Jahr!";
+      return;
+    }
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const mins = Math.floor((diff / (1000 * 60)) % 60);
+    const secs = Math.floor((diff / 1000) % 60);
+    document.getElementById("countdown").textContent =
+      `${days}d ${hours}h ${mins}m ${secs}s`;
+  }
+  setInterval(updateCountdown, 1000);
+  updateCountdown();
+</script>
+</body>
+</html>
